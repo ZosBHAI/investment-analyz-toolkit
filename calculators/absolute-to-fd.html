@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Absolute Return → FD Rate</title>
+
+  <!-- Shared CSS -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Ensure iframe-friendly layout -->
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+    }
+    .guide-box {
+      background: #eef5ff;
+      border-left: 4px solid #4a6ee0;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 0 4px 4px 0;
+      font-size: 0.95rem;
+      color: #333;
+    }
+    .guide-box h3 {
+      margin-top: 0;
+      color: #2d3e6b;
+      font-size: 1.1rem;
+    }
+    .guide-box ul {
+      padding-left: 1.2rem;
+    }
+    .guide-box li {
+      margin-bottom: 0.5rem;
+    }
+    .guide-box strong {
+      color: #2d3e6b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Absolute Return → FD Rate</h2>
+    
+    <!-- User Guide Section -->
+    <div class="guide-box">
+      <h3>How to Use This Calculator</h3>
+      <p>This calculator helps you determine what equivalent fixed deposit (FD) interest rate would have been required to match the absolute returns from an investment held for <strong>more than one year</strong>.</p>
+      
+      <p><strong>Example:</strong></p>
+      <ul>
+        <li>You bought a stock in 2020, added more in 2021, then again in 2025 and 2026.</li>
+        <li>Your overall <strong>absolute return is 100%</strong> across all investments.</li>
+        <li>The total time period is <strong>6 years</strong> (from first to latest investment).</li>
+      </ul>
+      
+      <p>This tool calculates: <strong>What annual FD interest rate would have given you the same 100% profit over 6 years?</strong></p>
+      
+      <p><strong>Simply enter:</strong></p>
+      <ol>
+        <li>Your total <strong>Absolute Return (%)</strong></li>
+        <li>The total <strong>Duration (Years)</strong></li>
+      </ol>
+    </div>
+
+    <label>Absolute Return (%)</label>
+    <input type="number" id="ar" step="0.1" placeholder="e.g. 100">
+
+    <label>Duration (Years)</label>
+    <input type="number" id="years" step="0.1" placeholder="e.g. 6">
+
+    <button onclick="calculate()">Calculate</button>
+
+    <div class="output">
+      <p id="result">-- % p.a.</p>
+	  <p class="note">This is the annual FD interest rate needed for equivalent growth</p>
+    </div>
+  </div>
+
+<script>
+function calculate() {
+  const ar = parseFloat(document.getElementById("ar").value);
+  const years = parseFloat(document.getElementById("years").value);
+
+  if (isNaN(ar) || isNaN(years) || years <= 0) {
+    alert("Enter valid inputs");
+    return;
+  }
+
+  const K = 1 + ar / 100;
+  const rate = Math.pow(K, 1 / years) - 1;
+
+  document.getElementById("result").innerText =
+    (rate * 100).toFixed(2) + " % p.a.";
+}
+</script>
+
+</body>
+</html>

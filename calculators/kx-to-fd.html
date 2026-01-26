@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>K × Money → FD Rate</title>
+
+  <!-- Shared normalized CSS -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- iframe-safe body reset -->
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+    }
+    .guide-box {
+      background: #fff8e6;
+      border-left: 4px solid #ffb347;
+      padding: 1.2rem;
+      margin: 1rem 0 1.5rem 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
+      color: #333;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .guide-box h3 {
+      margin-top: 0;
+      color: #d87c00;
+      font-size: 1.1rem;
+      border-bottom: 1px solid #ffd8a6;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .guide-box .highlight {
+      background: #fff0d6;
+      padding: 0.8rem;
+      border-radius: 4px;
+      margin: 1rem 0;
+      border: 1px dashed #ffb347;
+    }
+    .guide-box strong {
+      color: #d87c00;
+    }
+    .guide-box .example {
+      background: #f0f7ff;
+      padding: 0.8rem;
+      border-radius: 4px;
+      margin: 1rem 0;
+      border-left: 3px solid #4a6ee0;
+    }
+    .highlight-number {
+      background: #fff;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: bold;
+      border: 1px solid #ddd;
+    }
+    .note {
+      font-size: 0.85rem;
+      color: #666;
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>K × Money → FD Rate</h2>
+    
+    <!-- User Guide Section -->
+    <div class="guide-box">
+      <h3>How to Use This Calculator</h3>
+      <p>This calculator determines the <strong>Fixed Deposit (FD) interest rate</strong> needed to grow your money by a specific multiple over a given time period.</p>
+      
+      <div class="highlight">
+        <strong>Simply put:</strong> If you want your money to grow <span class="highlight-number">K times</span> in <span class="highlight-number">Y years</span>, what annual FD rate would achieve this?
+      </div>
+      
+      <div class="example">
+        <p><strong>Examples:</strong></p>
+        <ul style="margin-top: 0.5rem; padding-left: 1.2rem;">
+          
+          <li>Your <strong>stocks grew 2 times (K = 2)</strong> in <strong>2 years</strong> (equivalent FD rate ≈ 45% p.a.)</li>
+          <li>Want to <strong>triple your money (K = 3)</strong> in <strong>10 years</strong>?</li>
+        </ul>
+        <p style="margin-top: 0.5rem; margin-bottom: 0;">
+          This tool calculates the equivalent FD rate (e.g., approximately 45% p.a. for doubling in 2 years).
+        </p>
+      </div>
+      
+      <p><strong>Enter your values:</strong></p>
+      <ol style="padding-left: 1.2rem;">
+        <li><strong>K × Money:</strong> Desired growth multiple (e.g., 2 for doubling, 3 for tripling)</li>
+        <li><strong>Duration (Years):</strong> Time period for this growth</li>
+      </ol>
+      <p class="note">Note: K must be greater than 1. For example, K=1.5 means growing to 1.5 times the original amount.</p>
+    </div>
+
+    <label>K × Money</label>
+    <input type="number" id="k" step="0.01" placeholder="e.g. 2 (for doubling)">
+
+    <label>Duration (Years)</label>
+    <input type="number" id="years" step="0.1" placeholder="e.g. 2">
+
+    <button onclick="calculate()">Calculate FD Rate</button>
+
+    <div class="output">
+      <p id="result">-- % p.a.</p>
+      <p class="note">This is the annual FD interest rate needed for equivalent growth</p>
+    </div>
+  </div>
+
+<script>
+function calculate() {
+  const K = parseFloat(document.getElementById("k").value);
+  const years = parseFloat(document.getElementById("years").value);
+
+  if (isNaN(K) || K <= 1 || isNaN(years) || years <= 0) {
+    alert("Please enter valid numbers:\n• K must be greater than 1 (e.g., 1.5, 2, 3)\n• Years must be greater than 0");
+    return;
+  }
+
+  const rate = Math.pow(K, 1 / years) - 1;
+
+  document.getElementById("result").innerText =
+    (rate * 100).toFixed(2) + " % p.a.";
+    
+  // Optional: Add console log for debugging
+  console.log(`To grow money ${K}× in ${years} years, required FD rate: ${(rate * 100).toFixed(2)}% p.a.`);
+}
+</script>
+
+</body>
+</html>
