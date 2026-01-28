@@ -192,7 +192,7 @@
     </nav>
 
     <main class="content" id="contentArea">
-      <!-- Welcome Content (Default) - Store the original HTML -->
+      <!-- Welcome Content (Default) -->
       <div class="welcome-panel" id="welcomeContent">
         <h1 class="welcome-title">Investment Analysis Toolkit</h1>
         <p class="welcome-subtitle">Make informed investment decisions with analytical calculators</p>
@@ -236,30 +236,16 @@
   </div>
 
   <script>
-    // Store the original welcome content HTML
-    const originalWelcomeContent = document.getElementById('welcomeContent').innerHTML;
-    
     function loadTool(el, src) {
       // Update active state in sidebar
       document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
-      
-      // Find and activate the correct sidebar item
-      if (src === 'welcome') {
-        // Activate the Home button in sidebar
-        const homeLink = document.querySelector('.sidebar a[onclick*="welcome"]');
-        if (homeLink) homeLink.classList.add('active');
-      } else if (el) {
-        // Activate the clicked link
-        el.classList.add('active');
-      }
+      if (el) el.classList.add('active');
       
       const contentArea = document.getElementById('contentArea');
       const welcomeContent = document.getElementById('welcomeContent');
       const calcFrame = document.getElementById('calcFrame');
       
       if (src === 'welcome') {
-        // Restore original welcome content
-        welcomeContent.innerHTML = originalWelcomeContent;
         welcomeContent.style.display = 'block';
         calcFrame.style.display = 'none';
       } else if (src === 'coming-soon') {
@@ -270,7 +256,7 @@
             <h2 style="color: #1a237e;">Tool Under Development</h2>
             <p>This calculator is currently being developed and will be available soon.</p>
             <p>Check back later for updates, or explore the other available tools in the meantime.</p>
-            <button onclick="returnToHome()" style="
+            <button onclick="loadTool(null, 'welcome')" style="
               background: #3949ab;
               color: white;
               border: none;
@@ -286,11 +272,6 @@
         calcFrame.style.display = 'block';
         calcFrame.src = src;
       }
-    }
-    
-    // Helper function to return to home
-    function returnToHome() {
-      loadTool(null, 'welcome');
     }
     
     // Initialize with welcome page

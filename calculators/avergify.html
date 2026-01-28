@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avergify - Average Cost Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 25px 30px;
+        }
+        
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        header .subtitle {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 0;
+            min-height: 600px;
+        }
+        
+        .input-section {
+            padding: 25px;
+            background: #f8fafc;
+            border-right: 1px solid #e1e5e9;
+            position: relative;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+        
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #d1d9e6;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #4a6491;
+        }
+        
+        .input-group textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: monospace;
+        }
+        
+        .info-text {
+            font-size: 13px;
+            color: #666;
+            margin-top: 6px;
+            font-style: italic;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        button {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .btn-calculate {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+        }
+        
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-reset {
+            background: #f0f4f8;
+            color: #2c3e50;
+            border: 2px solid #d1d9e6;
+        }
+        
+        .btn-reset:hover {
+            background: #e1e7f0;
+        }
+        
+        .btn-guide {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 15px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        .btn-guide:hover {
+            background: #4a6491;
+        }
+        
+        .results-section {
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 800px;
+        }
+        
+        .results-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e1e5e9;
+        }
+        
+        .results-header h2 {
+            color: #2c3e50;
+            font-size: 22px;
+        }
+        
+        .results-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .report-block {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #e1e5e9;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .report-header {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e1e7f0 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .report-header h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .k-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .k-point {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2c3e50;
+        }
+        
+        .k-point h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .k-point p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        th {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 10px;
+            text-align: center;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #e1e5e9;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        
+        tr:hover {
+            background: #e3f2fd;
+        }
+        
+        .positive {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .negative {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .neutral {
+            color: #7f8c8d;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #ffeaea;
+            color: #c0392b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #c0392b;
+            display: none;
+        }
+        
+        /* Guide Section Styles */
+        .guide-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 100;
+            padding: 25px;
+            overflow-y: auto;
+        }
+        
+        .guide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #2c3e50;
+        }
+        
+        .guide-header h2 {
+            color: #2c3e50;
+        }
+        
+        .close-guide {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .close-guide:hover {
+            background: #c0392b;
+        }
+        
+        .guide-step {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .guide-step h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .guide-example {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 3px solid #4a6491;
+        }
+        
+        .guide-example h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .guide-tip {
+            background: #fff8e6;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 3px solid #f39c12;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 1100px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #e1e5e9;
+            }
+            
+            .guide-overlay {
+                position: fixed;
+                z-index: 1000;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            .k-points {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            table {
+                font-size: 13px;
+            }
+            
+            th, td {
+                padding: 8px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Avergify</h1>
+            <div class="subtitle">Calculate how averaging down affects your investment returns and analyze growth scenarios</div>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <!-- Guide Button -->
+                <button class="btn-guide" onclick="toggleGuide()">
+                    📖 How to Use This Calculator
+                </button>
+                
+                <!-- Guide Overlay -->
+                <div class="guide-overlay" id="guideOverlay">
+                    <div class="guide-header">
+                        <h2>How to Use the Avergify Calculator</h2>
+                        <button class="close-guide" onclick="toggleGuide()">Close Guide</button>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <h3><span class="step-number">1</span> Enter Your Current Position</h3>
+                        <p><strong>Initial Shares:</strong> Number of shares you currently own (e.g., 100 shares)</p>
+                        <p><strong>Initial Average Price:</strong> Your current average purchase price per share (e.g., ₹100)</p>
+                        <div class="guide-example">
+                            <h4>Example:</h4>
+                            <p>You bought 100 shares at an average price of ₹100 each</p>
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <h3><span class="step-number">2</span> Set Current Market Price</h3>
+                        <p><strong>Current Market Price:</strong> Today's stock price (e.g., ₹85)</p>
+                        <div class="guide-example">
+                            <h4>Example:</h4>
+                            <p>The stock is now trading at ₹85 (15% below your average)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <h3><span class="step-number">3</span> Choose "What-If" Quantities</h3>
+                        <p><strong>Quantities to Buy:</strong> List different amounts you might buy at current price</p>
+                        <p>Enter comma-separated values to compare multiple scenarios</p>
+                        <div class="guide-example">
+                            <h4>Example:</h4>
+                            <p>Try buying 50, 100, or 200 more shares to see how each affects your average cost</p>
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <h3><span class="step-number">4</span> Set Growth Scenarios to Analyze</h3>
+                        <p><strong>% Increases from Current Price:</strong> Future price increase percentages to analyze</p>
+                        <p><strong>K-values for Multiples:</strong> Target returns (1=break even, 2=double, 3=triple, etc.)</p>
+                        <div class="guide-example">
+                            <h4>Example:</h4>
+                            <p>See what happens if the price goes up 25%, 50%, or 100% from current level</p>
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <h3><span class="step-number">5</span> Understand the Results</h3>
+                        <p>The calculator shows you:</p>
+                        <ul style="padding-left: 20px; margin: 10px 0;">
+                            <li><strong>New Average Cost:</strong> Your updated average after buying more shares</li>
+                            <li><strong>Break-even Price:</strong> Price needed to recover your total investment</li>
+                            <li><strong>Target Prices:</strong> Prices needed to double or multiply your money</li>
+                            <li><strong>Detailed Returns:</strong> Absolute and percentage returns at various future prices</li>
+                        </ul>
+                        <div class="guide-tip">
+                            💡 <strong>Quick Example:</strong> If you own 100 shares at ₹100 average, and the stock is now ₹85, buying 50 more shares would lower your average to ₹95. You'd need the price to reach ₹95 to break even, or ₹190 to double your money.
+                        </div>
+                    </div>
+                    
+                    <button class="btn-calculate" onclick="toggleGuide()" style="margin-top: 20px;">Start Calculating Now</button>
+                </div>
+                
+                <div class="input-group">
+                    <label for="initialShares">Initial Shares (Q₀)</label>
+                    <input type="number" id="initialShares" value="100" min="1">
+                    <div class="info-text">Number of shares you currently hold</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="initialPrice">Initial Average Price (₹)</label>
+                    <input type="number" id="initialPrice" value="100" min="0" step="0.01">
+                    <div class="info-text">Your current average purchase price per share</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="currentPrice">Current Market Price (₹)</label>
+                    <input type="number" id="currentPrice" value="85" min="0" step="0.01">
+                    <div class="info-text">Current market price per share</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="quantities">Quantities to Buy (Q_list)</label>
+                    <textarea id="quantities" placeholder="Enter quantities separated by commas, e.g.: 50, 100, 20, 10, 200, 250">50, 100, 20, 10, 200, 250</textarea>
+                    <div class="info-text">List of share quantities you're considering buying at current price</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="increases">% Increases from Current Price</label>
+                    <textarea id="increases" placeholder="Enter percentages separated by commas">0, 5.88, 11.76, 17.65, 29.41, 41.18, 64.71, 88.24, 111.76, 123.53, 135.29, 158.82, 194.12, 252.94</textarea>
+                    <div class="info-text">Future price increase percentages to analyze</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="kValues">K-values for Multiples</label>
+                    <input type="text" id="kValues" value="1, 2, 3, 10" placeholder="e.g.: 1, 2, 3, 10">
+                    <div class="info-text">Investment multiples to calculate (1=breakeven, 2=doubling, etc.)</div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn-calculate" onclick="calculateReport()">Calculate Report</button>
+                    <button class="btn-reset" onclick="resetForm()">Reset Form</button>
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+            
+            <div class="results-section">
+                <div class="results-header">
+                    <h2>Investment Analysis Report</h2>
+                    <div id="reportSummary">Enter your values and click Calculate to see the analysis</div>
+                </div>
+                
+                <div class="loading" id="loadingIndicator">
+                    <div class="loading-spinner"></div>
+                    <p>Calculating report...</p>
+                </div>
+                
+                <div id="resultsContainer" class="results-container">
+                    <!-- Results will be inserted here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle guide visibility
+        function toggleGuide() {
+            const guide = document.getElementById('guideOverlay');
+            guide.style.display = guide.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        // Parse comma-separated values from input
+        function parseCSV(input) {
+            return input.split(',')
+                .map(item => item.trim())
+                .filter(item => item !== '')
+                .map(item => parseFloat(item));
+        }
+        
+        // Calculate K-point for given parameters
+        function calculateKPoint(Q0, P0, C, Q_add, K) {
+            const totalInvestment = Q0 * P0 + Q_add * C;
+            const totalShares = Q0 + Q_add;
+            
+            const F_K = (K * totalInvestment) / totalShares;
+            const inc_K = ((F_K - C) / C) * 100;
+            
+            return {
+                K: K,
+                F_K: F_K,
+                inc_K: inc_K,
+                target_value: K * totalInvestment
+            };
+        }
+        
+        // Generate complete report
+        function generateReport(Q0, P0, C, Q_list, inc_targets, K_values) {
+            const results = {};
+            
+            for (const Q_add of Q_list) {
+                const totalInvestment = Q0 * P0 + Q_add * C;
+                const totalShares = Q0 + Q_add;
+                const avgCost = totalInvestment / totalShares;
+                
+                // Store base info
+                results[Q_add] = {
+                    TI: totalInvestment,
+                    TS: totalShares,
+                    AC: avgCost,
+                    new_inv_amt: Q_add * C,
+                    rows: [],
+                    k_points: {}
+                };
+                
+                // Generate rows for each increase target
+                let prev_inc = null;
+                for (const inc of inc_targets) {
+                    const F = C * (1 + inc / 100);
+                    const inc_change = prev_inc === null ? "–" : inc - prev_inc;
+                    const totalValue = F * totalShares;
+                    const absReturn = totalValue - totalInvestment;
+                    const returnPercent = (absReturn / totalInvestment) * 100;
+                    
+                    results[Q_add].rows.push({
+                        F: F,
+                        inc: inc,
+                        inc_change: inc_change,
+                        TV: totalValue,
+                        AR: absReturn,
+                        ret_pct: returnPercent
+                    });
+                    
+                    prev_inc = inc;
+                }
+                
+                // Calculate K-points
+                for (const K of K_values) {
+                    const kPoint = calculateKPoint(Q0, P0, C, Q_add, K);
+                    results[Q_add].k_points[K] = kPoint;
+                }
+            }
+            
+            return results;
+        }
+        
+        // Format currency with Indian Rupee symbol
+        function formatCurrency(amount) {
+            return '₹' + amount.toLocaleString('en-IN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+        
+        // Format percentage
+        function formatPercent(value) {
+            return value.toFixed(2) + '%';
+        }
+        
+        // Get K-point label
+        function getKLabel(K) {
+            const labels = {
+                1: 'Breakeven (1×)',
+                2: 'Doubling (2×)',
+                3: 'Tripling (3×)',
+                10: '10× Return'
+            };
+            return labels[K] || `${K}× Return`;
+        }
+        
+        // Display the report
+        function displayReport(results, Q0, P0, C, K_values) {
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = '';
+            
+            // Update summary
+            document.getElementById('reportSummary').innerHTML = 
+                `Analyzing ${Object.keys(results).length} averaging scenarios with current price: ${formatCurrency(C)}`;
+            
+            for (const Q_add of Object.keys(results).map(Number).sort((a, b) => a - b)) {
+                const data = results[Q_add];
+                
+                const reportBlock = document.createElement('div');
+                reportBlock.className = 'report-block';
+                
+                // Header section
+                const headerHTML = `
+                    <div class="report-header">
+                        <h3>Buy ${Q_add} extra shares at current price = ${formatCurrency(C)}</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
+                            <div><strong>Old:</strong> ${Q0} shares at avg cost ${formatCurrency(P0)}</div>
+                            <div><strong>Total Investment:</strong> ${formatCurrency(data.TI)}</div>
+                            <div><strong>Total Shares:</strong> ${data.TS}</div>
+                            <div><strong>New Average Cost:</strong> ${formatCurrency(data.AC)}</div>
+                            <div><strong>New Investment:</strong> ${formatCurrency(data.new_inv_amt)}</div>
+                        </div>
+                    </div>
+                `;
+                
+                // K-points section
+                let kPointsHTML = '<div class="k-points">';
+                for (const K of K_values) {
+                    const kData = data.k_points[K];
+                    kPointsHTML += `
+                        <div class="k-point">
+                            <h4>${getKLabel(K)}</h4>
+                            <p><strong>Target Price:</strong> ${formatCurrency(kData.F_K)}</p>
+                            <p><strong>% Increase Needed:</strong> <span class="${kData.inc_K >= 0 ? 'positive' : 'negative'}">${formatPercent(kData.inc_K)}</span></p>
+                            <p><strong>Target Value:</strong> ${formatCurrency(kData.target_value)}</p>
+                        </div>
+                    `;
+                }
+                kPointsHTML += '</div>';
+                
+                // Table section
+                let tableHTML = `
+                    <div style="overflow-x: auto; margin-top: 20px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Future Price (₹)</th>
+                                    <th>% Inc from C</th>
+                                    <th>% Inc Change</th>
+                                    <th>Total Value (₹)</th>
+                                    <th>Abs Return (₹)</th>
+                                    <th>Return %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                for (const row of data.rows) {
+                    const incChangeDisplay = row.inc_change === "–" ? "–" : 
+                        (row.inc_change > 0 ? `+${formatPercent(row.inc_change)}` : formatPercent(row.inc_change));
+                    
+                    const returnClass = row.ret_pct > 0 ? 'positive' : (row.ret_pct < 0 ? 'negative' : 'neutral');
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${formatCurrency(row.F)}</td>
+                            <td>${formatPercent(row.inc)}</td>
+                            <td>${incChangeDisplay}</td>
+                            <td>${formatCurrency(row.TV)}</td>
+                            <td class="${returnClass}">${formatCurrency(row.AR)}</td>
+                            <td class="${returnClass}">${formatPercent(row.ret_pct)}</td>
+                        </tr>
+                    `;
+                }
+                
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                reportBlock.innerHTML = headerHTML + kPointsHTML + tableHTML;
+                container.appendChild(reportBlock);
+            }
+        }
+        
+        // Main calculation function
+        function calculateReport() {
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('resultsContainer').innerHTML = '';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            // Get input values
+            const Q0 = parseFloat(document.getElementById('initialShares').value);
+            const P0 = parseFloat(document.getElementById('initialPrice').value);
+            const C = parseFloat(document.getElementById('currentPrice').value);
+            
+            try {
+                const Q_list = parseCSV(document.getElementById('quantities').value);
+                const inc_targets = parseCSV(document.getElementById('increases').value);
+                const K_values = parseCSV(document.getElementById('kValues').value);
+                
+                // Validate inputs
+                if (!Q0 || Q0 <= 0) throw new Error("Initial shares must be a positive number");
+                if (!P0 || P0 <= 0) throw new Error("Initial price must be positive");
+                if (!C || C <= 0) throw new Error("Current price must be positive");
+                if (Q_list.length === 0) throw new Error("Enter at least one quantity to buy");
+                if (inc_targets.length === 0) throw new Error("Enter at least one percentage increase");
+                if (K_values.length === 0) throw new Error("Enter at least one K-value");
+                
+                // Generate and display report
+                setTimeout(() => {
+                    const results = generateReport(Q0, P0, C, Q_list, inc_targets, K_values);
+                    displayReport(results, Q0, P0, C, K_values);
+                    document.getElementById('loadingIndicator').style.display = 'none';
+                }, 500);
+                
+            } catch (error) {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('errorMessage').innerText = `Error: ${error.message}`;
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        }
+        
+        // Reset form
+        function resetForm() {
+            document.getElementById('initialShares').value = '100';
+            document.getElementById('initialPrice').value = '100';
+            document.getElementById('currentPrice').value = '85';
+            document.getElementById('quantities').value = '50, 100, 20, 10, 200, 250';
+            document.getElementById('increases').value = '0, 5.88, 11.76, 17.65, 29.41, 41.18, 64.71, 88.24, 111.76, 123.53, 135.29, 158.82, 194.12, 252.94';
+            document.getElementById('kValues').value = '1, 2, 3, 10';
+            
+            document.getElementById('resultsContainer').innerHTML = '';
+            document.getElementById('reportSummary').innerText = 'Enter your values and click Calculate to see the analysis';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+        
+        // Initialize with example calculation
+        window.onload = function() {
+            // Set a timeout to calculate on load
+            setTimeout(calculateReport, 100);
+        };
+    </script>
+</body>
+</html>
